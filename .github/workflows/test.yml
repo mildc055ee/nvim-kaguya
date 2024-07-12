@@ -1,0 +1,32 @@
+---
+name: Run tests
+on:
+  pull_request:
+    paths:
+      - '**.lua'
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ['stable', 'head']
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: notomo/action-setup-nvim-lua@v1
+      - run: luarocks install vusted
+      - name: Setup Neovim
+        id: nvim
+        uses: thinca/action-setup-vim@v2
+        with:
+          vim_version: '${{ matrix.version }}'
+          vim_type: 'Neovim'
+
+      - name: Run tests
+        env:
+          VUSTED_NVIM: ${{ steps.nvim.outputs.executable }}
+        run: vusted .

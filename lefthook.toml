@@ -1,0 +1,9 @@
+[pre-push]
+parallel = true
+
+[pre-push.commands]
+[pre-push.commands.lint]
+run = "luacheck ."
+
+[pre-push.commands.format]
+run = "stylua --check ."
